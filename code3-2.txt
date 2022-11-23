@@ -1,0 +1,81 @@
+import sys
+import math
+c_que = 0
+def information(my_list, fi, si):
+    inf_bq = [0,0,list(),list()]
+    f1, f2 = (fi - 1) * (fi > 0), (fi + 1) * (h - 1 != fi)
+    s1, s2 = (si - 1) * (si > 0), (si + 1) * (w - 1 != si)
+    for i in range(f1, f2 + 1):
+        for j in range(s1, s2 + 1):
+                if my_list[i][j] == "*":
+                    inf_bq[0] += 1
+                    inf_bq[2].append(str(i) + ' ' + str(j))
+                elif my_list[i][j] == "?":
+                    inf_bq[1] += 1
+                    inf_bq[3].append(str(i) + ' ' + str(j))
+    return inf_bq
+final_bombs = []
+f_bombs_y = []
+lines = []
+h, w = [int(i) for i in input().split()]
+nb = int(input())
+for i in range(h):
+    line = input()
+    lines.append(list(line))
+for i in range(h):
+    for j in range(w):
+        inf = information(lines, i, j)
+        if lines[i][j] not in "*.?":
+            if int(inf[1]) == int(lines[i][j]) - int(inf[0]):
+                for m in range(len(inf[3])):
+                    ind0 = inf[3][m].split(' ')[0]
+                    ind1 = inf[3][m].split(' ')[1]
+                    lines[int(ind0)][int(ind1)] = '*'
+                    final_bombs.append(str(ind1) + " " + str(ind0))
+            if int(inf[0]) == int(lines[i][j]):
+                for m in range(len(inf[3])):
+                    ind0 = inf[3][m].split(' ')[0]
+                    ind1 = inf[3][m].split(' ')[1]
+                    lines[int(ind0)][int(ind1)] = '.'
+for i in range(h - 1, -1 , -1):
+    for j in range(w - 1, -1, - 1):
+        inf = information(lines, i, j)
+        if lines[i][j] not in "*.?":
+            if int(inf[1]) == int(lines[i][j]) - int(inf[0]):
+                for m in range(len(inf[3])):
+                     ind0 = inf[3][m].split(' ')[0]
+                     ind1 = inf[3][m].split(' ')[1]
+                     lines[int(ind0)][int(ind1)] = '*'
+                     final_bombs.append(str(ind1) + " " + str(ind0))
+            if int(inf[0]) == int(lines[i][j]):
+                for m in range(len(inf[3])):
+                     ind0 = inf[3][m].split(' ')[0]
+                     ind1 = inf[3][m].split(' ')[1]
+                     lines[int(ind0)][int(ind1)] = '.'
+for i in range(h):
+    for j in range(w):
+        if lines[i][j] == "?":
+            c_que += 1
+if c_que == nb - len(final_bombs):
+    for i in range(h):
+        for j in range(w):
+            inf = information(lines, i, j)
+            if lines[i][j] == '?':
+                lines[i][j] = '*'
+                final_bombs.append(str(j) + " " + str(i))
+by, bx = [], []
+for i in range(len(final_bombs)):
+    by.append(final_bombs[i].split(' ')[0])
+    bx.append(final_bombs[i].split(' ')[1])
+for i in range(len(by) - 1):
+    for j in range(len(by) - 1):
+        if int(by[j]) > int(by[j + 1]):
+            bx[j], bx[j + 1] = bx[j + 1], bx[j]
+            by[j], by[j + 1] = by[j + 1], by[j]
+        elif int(by[j]) == int(by[j + 1]):
+            if bx[j] > bx[j + 1]:
+                bx[j], bx[j + 1] = bx[j + 1], bx[j]
+                by[j], by[j + 1] = by[j + 1], by[j]
+for i in range(len(bx)):
+    print(by[i] + ' ' + bx[i])
+        
